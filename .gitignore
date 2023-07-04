@@ -1,0 +1,29 @@
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# pico stuff
+generated
+elf2uf2
+pico-sdk
+pioasm
+
+# output binaries
+*.uf2
+*.bin
+*.hex
+*.dis
+*.elf
+*.map
+
+# macOS nonsense
+.DS_Store

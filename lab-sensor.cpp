@@ -1,0 +1,50 @@
+#include  <stdio.h>
+#include  "pico/stdlib.h"
+#include  "hardware/i2c.h"
+#include  <iostream>
+#include  <list>
+#include  <inttypes.h>
+#include  "lib/Si7021/src/si7021.h"
+
+#define LED 25
+#define SDA 0
+#define SCL 1
+
+int  main()  {
+	stdio_init_all();
+	gpio_init(LED);
+	gpio_set_dir(LED,  GPIO_OUT);
+
+    
+	i2c_init(i2c0,  100000);
+	gpio_set_function(SDA,  GPIO_FUNC_I2C);
+	gpio_set_function(SCL,  GPIO_FUNC_I2C);
+	gpio_pull_up(SDA);
+	gpio_pull_up(SCL);
+
+	Si7021::Si7021  si7021(i2c0);
+	si7021.setHeater(true);
+	si7021.setResolution(Si7021::Resolution::RH11T11);
+	si7021.setHeaterConfig(Si7021::HeaterConfig::hc0100);
+	int  counter  =  0;
+	for (;;) {
+        gpio_put(LED, 1);
+		printf("Si7021 Serial number: %#"  PRIx64  "\n",  si7021.askForSerialNumber());
+		printf("Si7021 Firmware: %#x\n",  si7021.askForFirmwareRev());
+		printf("Si7021 Humidity: %.2f[%%]\n",  si7021.askForHumidity());
+		printf("Si7021 Temperature: %.2f[°C]\n",  si7021.askForTemperature());
+		printf("Si7021 User register: %i\n", si7021.askForRegisterData(Si7021::Register::User));
+		printf("Si7021 Heater register: %i\n", si7021.askForRegisterData(Si7021::Register::Heater));
+		printf("Si7021 Resolution: %i\n",  si7021.askForResolution());
+		printf("Si7021 Heater status: %i\n",  si7021.askForHeater());
+		printf("Si7021 Heater config: %i\n",  si7021.askForHeaterConfig());
+		printf("-----------------------------------------------------\n");
+		if(counter++  ==  20){
+			printf("Si7021 Heater and User register reset!\n");
+			si7021.resetRegister(Si7021::Heater);
+			si7021.resetRegister(Si7021::User);
+		}
+        gpio_put(LED, 0);
+		sleep_ms(1000);
+	}
+}

@@ -1,0 +1,3 @@
+[submodule "lib/Si7021"]
+	path = lib/Si7021
+	url = https://github.com/DarekKrawczyk/Si7021.git
